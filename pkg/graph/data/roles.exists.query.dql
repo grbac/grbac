@@ -1,0 +1,5 @@
+query queryExistsRole($name: string) {
+  roles(func: eq(Role.name, $name)) {
+    Role.name
+  }
+}

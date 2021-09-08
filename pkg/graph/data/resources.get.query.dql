@@ -1,0 +1,22 @@
+query queryGetResource($name: string) {
+  resources(func: eq(Resource.name, $name)) {
+    Resource.name
+    Resource.etag
+    Resource.policy {
+      Policy.etag
+      Policy.version
+      Policy.bindings {
+        Binding.role {
+          Role.name
+        }
+        Binding.members {
+          Group.name
+          Subject.name
+        }
+      }
+    }
+    Resource.parent {
+      Resource.name
+    }
+  }
+}

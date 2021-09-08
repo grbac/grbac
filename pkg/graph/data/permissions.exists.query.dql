@@ -1,0 +1,5 @@
+query queryExistsPermission($name: string) {
+  permissions(func: eq(Permission.name, $name)) {
+    Permission.name
+  }
+}

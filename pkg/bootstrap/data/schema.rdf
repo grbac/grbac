@@ -1,0 +1,59 @@
+type Resource {
+    Resource.etag
+    Resource.name
+    Resource.parent
+    Resource.policy
+}
+
+type Policy {
+    Policy.bindings
+    Policy.version
+    Policy.etag
+}
+
+type Binding {
+    Binding.role
+    Binding.members
+}
+
+type Role {
+    Role.description
+    Role.displayName
+    Role.etag
+    Role.name
+    Role.permissions
+}
+
+type Permission {
+    Permission.name
+}
+
+type Group {
+    Group.etag
+    Group.members
+    Group.name
+}
+
+type Subject {
+    Subject.name
+}
+
+<Binding.members>: [uid] .
+<Binding.role>: uid .
+<Group.etag>: string @index(hash) @upsert .
+<Group.members>: [uid] .
+<Group.name>: string @index(hash) @upsert .
+<Permission.name>: string @index(hash) @upsert .
+<Policy.bindings>: [uid] .
+<Policy.etag>: string @index(hash) @upsert .
+<Policy.version>: int .
+<Resource.etag>: string @index(hash) @upsert .
+<Resource.name>: string @index(hash) @upsert .
+<Resource.parent>: uid @reverse .
+<Resource.policy>: uid .
+<Role.description>: string .
+<Role.displayName>: string .
+<Role.etag>: string @index(hash) @upsert .
+<Role.name>: string @index(hash) @upsert .
+<Role.permissions>: [uid] @reverse .
+<Subject.name>: string @index(hash) @upsert .

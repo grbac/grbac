@@ -1,0 +1,3 @@
+query {
+	var(func: eq(Permission.name, "{{ .Permission.Name }}")) { permission as uid }
+}

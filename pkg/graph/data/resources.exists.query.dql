@@ -1,0 +1,5 @@
+query queryGetResource($name: string) {
+  resources(func: eq(Resource.name, $name)) {
+    Resource.name
+  }
+}

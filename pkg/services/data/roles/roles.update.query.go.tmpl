@@ -1,0 +1,9 @@
+query {
+	var(func: eq(Role.name, "{{ .Role.Name }}")) { role as uid }
+
+	{{- if call .FieldMask "role.permissions" }}
+	{{- range .Role.Permissions }}
+	var(func: eq(Permission.name, "{{ ToPermissionName . }}")) { permission_{{ AlphaNumVar . }} as uid }
+	{{- end }}
+	{{- end }} {{/* if FieldMask "role.permissions" */}}
+}

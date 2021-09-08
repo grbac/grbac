@@ -1,0 +1,7 @@
+query {
+	var(func: eq(Resource.name, "{{ .Resource.Name }}")) { resource as uid }
+
+	{{- with .Resource.Parent }}
+	var(func: eq(Resource.name, "{{ . }}")) { parent as uid }
+	{{- end }} {{/* with .Resource.Parent */}}
+}

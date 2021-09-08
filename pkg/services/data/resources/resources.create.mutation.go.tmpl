@@ -1,0 +1,7 @@
+uid(resource) <dgraph.type> "Resource" .
+uid(resource) <Resource.name> "{{ .Resource.Name }}" .
+uid(resource) <Resource.etag> "{{ .ETag }}" .
+
+{{- with .Resource.Parent }}
+uid(resource) <Resource.parent> uid(parent) .
+{{- end }} {{/* with .Resource.Parent */}}

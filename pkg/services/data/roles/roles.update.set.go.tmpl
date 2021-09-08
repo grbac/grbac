@@ -1,0 +1,8 @@
+
+uid(role) <Role.etag> "{{ .ETag }}" .
+
+{{- if call .FieldMask "role.permissions" }}
+{{- range .Role.Permissions }}
+uid(role) <Role.permissions> uid(permission_{{ AlphaNumVar . }}) .
+{{- end }} {{/* range .Permissions */}}
+{{- end }} {{/* if FieldMask "role.permissions" */}}

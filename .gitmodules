@@ -1,0 +1,6 @@
+[submodule "schema/api-common-protos"]
+	path = schema/api-common-protos
+	url = https://github.com/googleapis/api-common-protos.git
+[submodule "schema/animeapis"]
+	path = schema/animeapis
+	url = https://github.com/animeapis/animeapis.git

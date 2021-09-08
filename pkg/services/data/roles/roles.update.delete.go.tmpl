@@ -1,0 +1,3 @@
+{{- if call .FieldMask "role.permissions" }}
+uid(role) <Role.permissions> * .
+{{- end }} {{/* if FieldMask "role.permissions" */}}

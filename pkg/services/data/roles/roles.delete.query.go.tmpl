@@ -1,0 +1,3 @@
+query {
+	var(func: eq(Role.name, "{{ .Name }}")) { role as uid }
+}

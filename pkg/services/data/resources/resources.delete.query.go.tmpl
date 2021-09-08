@@ -1,0 +1,7 @@
+query {
+	resource as var(func: eq(Resource.name, "{{ .Name }}")) {
+		policy as Resource.policy {
+			bindings as Policy.bindings
+		}
+	}
+}

@@ -1,0 +1,7 @@
+uid(group) <Group.etag> "{{ .ETag }}" .
+
+{{- if call .FieldMask "group.members" }}
+{{- range .Group.Members }}
+uid(group) <Group.members> uid(members_{{ AlphaNumVar . }}) .
+{{- end }} {{/* range .Members */}}
+{{- end }} {{/* if FieldMask "group.members" */}}

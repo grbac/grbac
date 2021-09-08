@@ -1,0 +1,2 @@
+uid(allUsers) <dgraph.type> "Subject" .
+uid(allUsers) <Subject.name> "system/allUsers" .

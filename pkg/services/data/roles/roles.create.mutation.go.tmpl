@@ -1,0 +1,7 @@
+uid(role) <dgraph.type> "Role" .
+uid(role) <Role.name> "{{ .Role.Name }}" .
+uid(role) <Role.etag> "{{ .ETag }}" .
+
+{{- range .Role.Permissions }}
+uid(role) <Role.permissions> uid(permission_{{ AlphaNumVar . }}) .
+{{- end }}

@@ -1,0 +1,17 @@
+query queryAuthorize($principal: string, $resource: string, $permission: string) {
+  var(func: eq(Subject.name, $principal)) { subject as uid }
+  var(func: eq(Resource.name, $resource)) { object as uid }
+  var(func: eq(Permission.name, $permission)) { ~Role.permissions { roles as uid } }
+
+  path as shortest(from: uid(object), to: uid(subject)) {
+    Resource.parent
+    Resource.policy 
+    Policy.bindings @filter(uid_in(Binding.role, uid(roles)))
+    Group.members
+    Binding.members
+  }
+  
+  ok(func: uid(path), first:1) {
+    uid
+  }
+}

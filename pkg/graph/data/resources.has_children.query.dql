@@ -1,0 +1,7 @@
+query queryHasChildren($name: string) {
+  children(func: eq(Resource.name, $name)) {
+    ~Resource.parent {
+      Resource.name
+    }
+  }
+}

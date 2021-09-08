@@ -1,0 +1,5 @@
+query queryExistsGroup($name: string) {
+  groups(func: eq(Group.name, $name)) {
+    Group.name
+  }
+}

@@ -1,0 +1,3 @@
+query {
+  var(func: eq(Subject.name, "system/allUsers")) { allUsers as uid }
+}

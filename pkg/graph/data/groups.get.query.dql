@@ -1,0 +1,10 @@
+query queryGetGroup($name: string) {
+  groups(func: eq(Group.name, $name)) {
+    Group.name
+    Group.etag
+    Group.members {
+      Group.name
+      Subject.name
+    }
+  }
+}

@@ -1,0 +1,5 @@
+query queryExistsSubject($name: string) {
+  subjects(func: eq(Subject.name, $name)) {
+    Subject.name
+  }
+}

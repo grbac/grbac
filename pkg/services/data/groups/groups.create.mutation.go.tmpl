@@ -1,0 +1,7 @@
+uid(group) <dgraph.type> "Group" .
+uid(group) <Group.name> "{{ .Group.Name }}" .
+uid(group) <Group.etag> "{{ .ETag }}" .
+
+{{- range .Group.Members }}
+uid(group) <Group.members> uid(members_{{ AlphaNumVar . }}) .
+{{- end }} {{/* range .Members */}}

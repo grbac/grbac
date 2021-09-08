@@ -1,0 +1,9 @@
+query queryGetRole($name: string) {
+  roles(func: eq(Role.name, $name)) {
+    Role.name
+    Role.etag
+    Role.permissions {
+      Permission.name
+    }
+  }
+}

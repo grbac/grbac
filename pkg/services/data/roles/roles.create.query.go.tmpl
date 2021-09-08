@@ -1,0 +1,7 @@
+query {
+	var(func: eq(Role.name, "{{ .Role.Name }}")) { role as uid }
+
+	{{- range .Role.Permissions }}
+	var(func: eq(Permission.name, "{{ ToPermissionName . }}")) { permission_{{ AlphaNumVar . }} as uid }
+	{{- end }}
+}

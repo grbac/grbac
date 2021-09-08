@@ -1,0 +1,5 @@
+uid(group) <Group.etag> * .
+
+{{- if call .FieldMask "group.members" }}
+uid(group) <Group.members> * .
+{{- end }} {{/* if FieldMask "group.members" */}}
