@@ -234,95 +234,95 @@ func TestIntegrationAuthorize(t *testing.T) {
 		object   string
 		subject  string
 		relation string
-		allowed  bool
+		status   codes.Code
 	}
 
 	for _, i := range []*T{
 		// Test: authorization rule on non-existing resource should return permission denied.
-		{ResourceNotFound.Name, User0.Name, PermissionGet.Name, false},
-		{ResourceNotFound.Name, Anonymous, PermissionGet.Name, false},
+		{ResourceNotFound.Name, User0.Name, PermissionGet.Name, codes.NotFound},
+		{ResourceNotFound.Name, Anonymous, PermissionGet.Name, codes.NotFound},
 
 		// Test: authorization rule on non-existing permission should return permission denied.
-		{Resource0.Name, User0.Name, PermissionNotFound.Name, false},
-		{Resource0.Name, Anonymous, PermissionNotFound.Name, false},
+		{Resource0.Name, User0.Name, PermissionNotFound.Name, codes.PermissionDenied},
+		{Resource0.Name, Anonymous, PermissionNotFound.Name, codes.PermissionDenied},
 
 		// Test: only members of group-0 should be granted "grbac.test.create" permission on resource-0.
-		{Resource0.Name, User0.Name, PermissionCreate.Name, true},
-		{Resource0.Name, ServiceAccount0.Name, PermissionCreate.Name, true},
+		{Resource0.Name, User0.Name, PermissionCreate.Name, codes.OK},
+		{Resource0.Name, ServiceAccount0.Name, PermissionCreate.Name, codes.OK},
 
-		{Resource0.Name, User1.Name, PermissionCreate.Name, false},
-		{Resource0.Name, User2.Name, PermissionCreate.Name, false},
-		{Resource0.Name, UserNotFound.Name, PermissionCreate.Name, false},
-		{Resource0.Name, ServiceAccount1.Name, PermissionCreate.Name, false},
-		{Resource0.Name, ServiceAccount2.Name, PermissionCreate.Name, false},
-		{Resource0.Name, ServiceAccountNotFound.Name, PermissionCreate.Name, false},
-		{Resource0.Name, Anonymous, PermissionCreate.Name, false},
+		{Resource0.Name, User1.Name, PermissionCreate.Name, codes.PermissionDenied},
+		{Resource0.Name, User2.Name, PermissionCreate.Name, codes.PermissionDenied},
+		{Resource0.Name, UserNotFound.Name, PermissionCreate.Name, codes.PermissionDenied},
+		{Resource0.Name, ServiceAccount1.Name, PermissionCreate.Name, codes.PermissionDenied},
+		{Resource0.Name, ServiceAccount2.Name, PermissionCreate.Name, codes.PermissionDenied},
+		{Resource0.Name, ServiceAccountNotFound.Name, PermissionCreate.Name, codes.PermissionDenied},
+		{Resource0.Name, Anonymous, PermissionCreate.Name, codes.PermissionDenied},
 
 		// Test: only members of group-0 should be granted "grbac.test.get" permission on resource-0.
-		{Resource0.Name, User0.Name, PermissionGet.Name, true},
-		{Resource0.Name, ServiceAccount0.Name, PermissionGet.Name, true},
+		{Resource0.Name, User0.Name, PermissionGet.Name, codes.OK},
+		{Resource0.Name, ServiceAccount0.Name, PermissionGet.Name, codes.OK},
 
-		{Resource0.Name, User1.Name, PermissionGet.Name, false},
-		{Resource0.Name, User2.Name, PermissionGet.Name, false},
-		{Resource0.Name, UserNotFound.Name, PermissionGet.Name, false},
-		{Resource0.Name, ServiceAccount1.Name, PermissionGet.Name, false},
-		{Resource0.Name, ServiceAccount2.Name, PermissionGet.Name, false},
-		{Resource0.Name, ServiceAccountNotFound.Name, PermissionGet.Name, false},
-		{Resource0.Name, Anonymous, PermissionGet.Name, false},
+		{Resource0.Name, User1.Name, PermissionGet.Name, codes.PermissionDenied},
+		{Resource0.Name, User2.Name, PermissionGet.Name, codes.PermissionDenied},
+		{Resource0.Name, UserNotFound.Name, PermissionGet.Name, codes.PermissionDenied},
+		{Resource0.Name, ServiceAccount1.Name, PermissionGet.Name, codes.PermissionDenied},
+		{Resource0.Name, ServiceAccount2.Name, PermissionGet.Name, codes.PermissionDenied},
+		{Resource0.Name, ServiceAccountNotFound.Name, PermissionGet.Name, codes.PermissionDenied},
+		{Resource0.Name, Anonymous, PermissionGet.Name, codes.PermissionDenied},
 
 		// Test: nobody should be granted "grbac.test.delete" permission on resource-0.
-		{Resource0.Name, User0.Name, PermissionDelete.Name, false},
-		{Resource0.Name, User1.Name, PermissionDelete.Name, false},
-		{Resource0.Name, User2.Name, PermissionDelete.Name, false},
-		{Resource0.Name, UserNotFound.Name, PermissionDelete.Name, false},
-		{Resource0.Name, ServiceAccount0.Name, PermissionDelete.Name, false},
-		{Resource0.Name, ServiceAccount1.Name, PermissionDelete.Name, false},
-		{Resource0.Name, ServiceAccount2.Name, PermissionDelete.Name, false},
-		{Resource0.Name, ServiceAccountNotFound.Name, PermissionDelete.Name, false},
-		{Resource0.Name, Anonymous, PermissionDelete.Name, false},
+		{Resource0.Name, User0.Name, PermissionDelete.Name, codes.PermissionDenied},
+		{Resource0.Name, User1.Name, PermissionDelete.Name, codes.PermissionDenied},
+		{Resource0.Name, User2.Name, PermissionDelete.Name, codes.PermissionDenied},
+		{Resource0.Name, UserNotFound.Name, PermissionDelete.Name, codes.PermissionDenied},
+		{Resource0.Name, ServiceAccount0.Name, PermissionDelete.Name, codes.PermissionDenied},
+		{Resource0.Name, ServiceAccount1.Name, PermissionDelete.Name, codes.PermissionDenied},
+		{Resource0.Name, ServiceAccount2.Name, PermissionDelete.Name, codes.PermissionDenied},
+		{Resource0.Name, ServiceAccountNotFound.Name, PermissionDelete.Name, codes.PermissionDenied},
+		{Resource0.Name, Anonymous, PermissionDelete.Name, codes.PermissionDenied},
 
 		// Test: all users should be granted "grbac.test.get" permission on resource-1.
-		{Resource1.Name, User0.Name, PermissionGet.Name, true},
-		{Resource1.Name, User1.Name, PermissionGet.Name, true},
-		{Resource1.Name, User2.Name, PermissionGet.Name, true},
-		{Resource1.Name, UserNotFound.Name, PermissionGet.Name, true},
-		{Resource1.Name, ServiceAccount0.Name, PermissionGet.Name, true},
-		{Resource1.Name, ServiceAccount1.Name, PermissionGet.Name, true},
-		{Resource1.Name, ServiceAccount2.Name, PermissionGet.Name, true},
-		{Resource1.Name, ServiceAccountNotFound.Name, PermissionGet.Name, true},
-		{Resource1.Name, Anonymous, PermissionGet.Name, true},
+		{Resource1.Name, User0.Name, PermissionGet.Name, codes.OK},
+		{Resource1.Name, User1.Name, PermissionGet.Name, codes.OK},
+		{Resource1.Name, User2.Name, PermissionGet.Name, codes.OK},
+		{Resource1.Name, UserNotFound.Name, PermissionGet.Name, codes.OK},
+		{Resource1.Name, ServiceAccount0.Name, PermissionGet.Name, codes.OK},
+		{Resource1.Name, ServiceAccount1.Name, PermissionGet.Name, codes.OK},
+		{Resource1.Name, ServiceAccount2.Name, PermissionGet.Name, codes.OK},
+		{Resource1.Name, ServiceAccountNotFound.Name, PermissionGet.Name, codes.OK},
+		{Resource1.Name, Anonymous, PermissionGet.Name, codes.OK},
 
 		// Test: only members of group-0 should be granted "grbac.test.delete" permission on resource-1.
-		{Resource1.Name, User0.Name, PermissionDelete.Name, true},
-		{Resource1.Name, ServiceAccount0.Name, PermissionDelete.Name, true},
+		{Resource1.Name, User0.Name, PermissionDelete.Name, codes.OK},
+		{Resource1.Name, ServiceAccount0.Name, PermissionDelete.Name, codes.OK},
 
-		{Resource1.Name, User1.Name, PermissionDelete.Name, false},
-		{Resource1.Name, User2.Name, PermissionDelete.Name, false},
-		{Resource1.Name, UserNotFound.Name, PermissionDelete.Name, false},
-		{Resource1.Name, ServiceAccount1.Name, PermissionDelete.Name, false},
-		{Resource1.Name, ServiceAccount2.Name, PermissionDelete.Name, false},
-		{Resource1.Name, ServiceAccountNotFound.Name, PermissionDelete.Name, false},
-		{Resource1.Name, Anonymous, PermissionDelete.Name, false},
+		{Resource1.Name, User1.Name, PermissionDelete.Name, codes.PermissionDenied},
+		{Resource1.Name, User2.Name, PermissionDelete.Name, codes.PermissionDenied},
+		{Resource1.Name, UserNotFound.Name, PermissionDelete.Name, codes.PermissionDenied},
+		{Resource1.Name, ServiceAccount1.Name, PermissionDelete.Name, codes.PermissionDenied},
+		{Resource1.Name, ServiceAccount2.Name, PermissionDelete.Name, codes.PermissionDenied},
+		{Resource1.Name, ServiceAccountNotFound.Name, PermissionDelete.Name, codes.PermissionDenied},
+		{Resource1.Name, Anonymous, PermissionDelete.Name, codes.PermissionDenied},
 
 		// Test: only members of group-0 (inherited) and group-1 should be granted "grbac.test.create" permission on resource-1.
-		{Resource1.Name, User0.Name, PermissionCreate.Name, true},
-		{Resource1.Name, User1.Name, PermissionCreate.Name, true},
-		{Resource1.Name, ServiceAccount0.Name, PermissionCreate.Name, true},
-		{Resource1.Name, ServiceAccount1.Name, PermissionCreate.Name, true},
+		{Resource1.Name, User0.Name, PermissionCreate.Name, codes.OK},
+		{Resource1.Name, User1.Name, PermissionCreate.Name, codes.OK},
+		{Resource1.Name, ServiceAccount0.Name, PermissionCreate.Name, codes.OK},
+		{Resource1.Name, ServiceAccount1.Name, PermissionCreate.Name, codes.OK},
 
-		{Resource1.Name, User2.Name, PermissionCreate.Name, false},
-		{Resource1.Name, ServiceAccount2.Name, PermissionCreate.Name, false},
-		{Resource1.Name, Anonymous, PermissionCreate.Name, false},
+		{Resource1.Name, User2.Name, PermissionCreate.Name, codes.PermissionDenied},
+		{Resource1.Name, ServiceAccount2.Name, PermissionCreate.Name, codes.PermissionDenied},
+		{Resource1.Name, Anonymous, PermissionCreate.Name, codes.PermissionDenied},
 
 		// Test: only members of group-0 and group-1 should be granted "grbac.test.get" permission on resource-2.
-		{Resource2.Name, User0.Name, PermissionGet.Name, true},
-		{Resource2.Name, User1.Name, PermissionGet.Name, true},
-		{Resource2.Name, ServiceAccount0.Name, PermissionGet.Name, true},
-		{Resource2.Name, ServiceAccount1.Name, PermissionGet.Name, true},
+		{Resource2.Name, User0.Name, PermissionGet.Name, codes.OK},
+		{Resource2.Name, User1.Name, PermissionGet.Name, codes.OK},
+		{Resource2.Name, ServiceAccount0.Name, PermissionGet.Name, codes.OK},
+		{Resource2.Name, ServiceAccount1.Name, PermissionGet.Name, codes.OK},
 
-		{Resource2.Name, User2.Name, PermissionGet.Name, false},
-		{Resource2.Name, ServiceAccount2.Name, PermissionGet.Name, false},
-		{Resource2.Name, Anonymous, PermissionGet.Name, false},
+		{Resource2.Name, User2.Name, PermissionGet.Name, codes.PermissionDenied},
+		{Resource2.Name, ServiceAccount2.Name, PermissionGet.Name, codes.PermissionDenied},
+		{Resource2.Name, Anonymous, PermissionGet.Name, codes.PermissionDenied},
 	} {
 		subject := i.subject
 		if isUser(i.subject) {
@@ -338,13 +338,12 @@ func TestIntegrationAuthorize(t *testing.T) {
 			},
 		})
 
-		if i.allowed {
+		if err == nil {
+			assert.Equal(t, i.status, codes.OK)
 			assert.NoError(t, err, "[%s:%s:%s]", i.object, i.relation, i.subject)
 		} else {
+			assert.Equal(t, i.status, status.Code(err))
 			assert.Error(t, err, "[%s:%s:%s]", i.object, i.relation, i.subject)
-			if err != nil {
-				assert.Equal(t, codes.PermissionDenied, status.Code(err), "[%s:%s:%s]", i.object, i.relation, i.subject)
-			}
 		}
 	}
 }

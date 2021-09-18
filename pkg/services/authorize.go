@@ -68,20 +68,21 @@ func (s *AccessControlServerImpl) TestIamPolicy(ctx context.Context, req *grbac.
 	}
 
 	// Ask in parallel whether the user is allowed or allUsers is allowed.
-	var isAllowed, isAllUsersAllowed bool
+	var isAllowed, isAllUsersAllowed, isFound bool
 	group, ctx := errgroup.WithContext(ctx)
 
 	group.Go(func() error {
-		allowed, err := s.testIamPolicy(ctx, m)
+		allowed, _, err := s.testIamPolicy(ctx, m)
 
 		isAllowed = allowed
 		return err
 	})
 
 	group.Go(func() error {
-		allowed, err := s.testIamPolicy(ctx, allUsers)
+		allowed, found, err := s.testIamPolicy(ctx, allUsers)
 
 		isAllUsersAllowed = allowed
+		isFound = found
 		return err
 	})
 
@@ -94,26 +95,27 @@ func (s *AccessControlServerImpl) TestIamPolicy(ctx context.Context, req *grbac.
 		return &empty.Empty{}, nil
 	}
 
+	if !isFound {
+		return nil, status.New(codes.NotFound, "resource not found").Err()
+	}
+
 	return nil, status.New(codes.PermissionDenied, "permission denied").Err()
 }
 
-func (s *AccessControlServerImpl) testIamPolicy(ctx context.Context, m map[string]string) (bool, error) {
+func (s *AccessControlServerImpl) testIamPolicy(ctx context.Context, m map[string]string) (bool, bool, error) {
 	resp, err := s.cli.NewReadOnlyTxn().QueryWithVars(ctx, queryAuthorize, m)
 	if err != nil {
-		return false, err
+		return false, false, err
 	}
 
 	payload := new(struct {
-		Ok []json.RawMessage `json:"ok"`
+		Ok    []json.RawMessage `json:"ok"`
+		Found []json.RawMessage `json:"found"`
 	})
 
 	if err := json.Unmarshal(resp.Json, &payload); err != nil {
-		return false, err
+		return false, false, err
 	}
 
-	if len(payload.Ok) == 0 {
-		return false, nil
-	}
-
-	return true, nil
+	return len(payload.Ok) != 0, len(payload.Found) != 0, nil
 }

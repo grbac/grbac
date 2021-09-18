@@ -14,4 +14,8 @@ query queryAuthorize($principal: string, $resource: string, $permission: string)
   ok(func: uid(path), first:1) {
     uid
   }
+  
+  found(func:uid(object), first: 1) {
+    uid
+  }
 }
