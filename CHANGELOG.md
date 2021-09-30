@@ -1,5 +1,12 @@
 # Changelog
 
+### [1.1.1](https://www.github.com/grbac/grbac/compare/v1.1.0...v1.1.1) (2021-09-30)
+
+
+### Bug Fixes
+
+* avoid conflicts in IAM policies ([f9ea287](https://www.github.com/grbac/grbac/commit/f9ea287e157e7a542bbd5acd76501f0deb644737))
+
 ## [1.1.0](https://www.github.com/grbac/grbac/compare/v1.0.0...v1.1.0) (2021-09-18)
 
 
