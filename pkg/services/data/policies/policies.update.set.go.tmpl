@@ -7,11 +7,11 @@ uid(policy) <Policy.version> "{{ .Policy.Version }}" .
 {{- range .Policy.Bindings }}
 uid(policy) <Policy.bindings> _:binding_{{ AlphaNumVar .Role }} .
 
-_:binding_{{ AlphaNumVar .Role }} <dgraph.type> "Binding" ..
+_:binding_{{ AlphaNumVar .Role }} <dgraph.type> "Binding" .
 _:binding_{{ AlphaNumVar .Role }} <Binding.role> uid(role_{{ AlphaNumVar .Role }}) .
 
 {{- $binding := . }}
 {{- range .Members }}
-_:binding_{{ AlphaNumVar $binding.Role }} <Binding.members> uid(members_{{ AlphaNumVar . }}) .
+_:binding_{{ AlphaNumVar $binding.Role }} <Binding.members> uid(members_{{ AlphaNumVar $binding.Role }}_{{ AlphaNumVar . }}) .
 {{- end }} {{/* range .Members */}}
 {{- end }} {{/* range .Bindings */}}

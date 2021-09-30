@@ -57,6 +57,7 @@ func (s *AccessControlServerImpl) validateSetIamPolicy(ctx context.Context, txn 
 		return status.New(codes.InvalidArgument, "invalid argument {invalid policy version}").Err()
 	}
 
+	roles := map[string]interface{}{}
 	for _, i := range req.Policy.Bindings {
 		// The binding role must be defined.
 		if len(i.Role) == 0 {
@@ -78,6 +79,12 @@ func (s *AccessControlServerImpl) validateSetIamPolicy(ctx context.Context, txn 
 		if len(i.Members) == 0 {
 			return status.New(codes.InvalidArgument, "invalid argument {binding has no members}").Err()
 		}
+
+		// The same role should not appear multiple times across different bindings.
+		if _, ok := roles[i.Role]; ok {
+			return status.New(codes.InvalidArgument, "invalid argument {role defined multiple times}").Err()
+		}
+		roles[i.Role] = nil
 
 		// The members must all exist and must have a known type.
 		for _, m := range i.Members {
