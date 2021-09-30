@@ -8,15 +8,16 @@ query {
 	{{- range .Policy.Bindings }}
 	var(func: eq(Role.name, "{{ .Role }}")) { role_{{ AlphaNumVar .Role }} as uid }
 
+	{{- $binding := . }}
 	{{- range .Members }}
 	{{- if IsGroup . }}
-	var(func: eq(Group.name, "{{ ToGroupName . }}")) { members_{{ AlphaNumVar . }} as uid }
+	var(func: eq(Group.name, "{{ ToGroupName . }}")) { members_{{ AlphaNumVar $binding.Role }}_{{ AlphaNumVar . }} as uid }
 	{{- else if IsUser . }}
-	var(func: eq(Subject.name, "{{  ToUserName . }}")) { members_{{ AlphaNumVar . }} as uid }
+	var(func: eq(Subject.name, "{{  ToUserName . }}")) { members_{{ AlphaNumVar $binding.Role }}_{{ AlphaNumVar . }} as uid }
 	{{- else if IsServiceAccount . }}
-	var(func: eq(Subject.name, "{{ ToServiceAccountName . }}")) { members_{{ AlphaNumVar . }} as uid }
+	var(func: eq(Subject.name, "{{ ToServiceAccountName . }}")) { members_{{ AlphaNumVar $binding.Role }}_{{ AlphaNumVar . }} as uid }
 	{{- else if IsAllUsers . }}
-	var(func: eq(Subject.name, "system/allUsers")) { members_{{ AlphaNumVar . }} as uid }
+	var(func: eq(Subject.name, "system/allUsers")) { members_{{ AlphaNumVar $binding.Role }}_{{ AlphaNumVar . }} as uid }
 	{{- end }} {{/* if IsGroup . */}}
 	{{- end }} {{/* range .Members */}}
 	{{- end }} {{/* range .Bindings */}}

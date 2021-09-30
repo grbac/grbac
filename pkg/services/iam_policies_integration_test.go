@@ -66,6 +66,9 @@ func TestIntegrationSetIamPolicy(t *testing.T) {
 		Permission0 = &grbac.Permission{
 			Name: "permissions/grbac.test." + uuid.New().String(),
 		}
+		Permission1 = &grbac.Permission{
+			Name: "permissions/grbac.test." + uuid.New().String(),
+		}
 
 		Role0 = &grbac.Role{
 			Name: "roles/" + uuid.New().String(),
@@ -74,6 +77,13 @@ func TestIntegrationSetIamPolicy(t *testing.T) {
 			},
 		}
 		Role1 = &grbac.Role{
+			Name: "roles/" + uuid.New().String(),
+			Permissions: []string{
+				toPermissionId(Permission0.Name),
+				toPermissionId(Permission1.Name),
+			},
+		}
+		Role2 = &grbac.Role{
 			Name: "roles/" + uuid.New().String(),
 		}
 
@@ -97,6 +107,12 @@ func TestIntegrationSetIamPolicy(t *testing.T) {
 						toGroupMember(Group0.Name),
 					},
 				},
+				{
+					Role: Role1.Name,
+					Members: []string{
+						toUserMember(User0.Name),
+					},
+				},
 			},
 		}
 	)
@@ -108,7 +124,13 @@ func TestIntegrationSetIamPolicy(t *testing.T) {
 	_, err = server.CreatePermission(context.TODO(), &grbac.CreatePermissionRequest{Permission: Permission0})
 	require.NoError(t, err)
 
+	_, err = server.CreatePermission(context.TODO(), &grbac.CreatePermissionRequest{Permission: Permission1})
+	require.NoError(t, err)
+
 	_, err = server.CreateRole(context.TODO(), &grbac.CreateRoleRequest{Role: Role0})
+	require.NoError(t, err)
+
+	_, err = server.CreateRole(context.TODO(), &grbac.CreateRoleRequest{Role: Role1})
 	require.NoError(t, err)
 
 	_, err = server.CreateSubject(context.TODO(), &grbac.CreateSubjectRequest{Subject: User0})
@@ -244,7 +266,7 @@ func TestIntegrationSetIamPolicy(t *testing.T) {
 			Version: 1,
 			Bindings: []*iam.Binding{
 				{
-					Role: Role1.Name,
+					Role: Role2.Name,
 					Members: []string{
 						toUserMember(User0.Name),
 						toServiceAccountMember(ServiceAccount0.Name),
@@ -325,6 +347,29 @@ func TestIntegrationSetIamPolicy(t *testing.T) {
 			Bindings: []*iam.Binding{
 				{
 					Role: Role0.Name,
+				},
+			},
+		},
+	})
+	require.Error(t, err)
+	assert.Equal(t, codes.InvalidArgument, status.Code(err))
+
+	// Test: setting an invalid (repeated role) resource policy should fail.
+	_, err = server.SetIamPolicy(context.TODO(), &iam.SetIamPolicyRequest{
+		Resource: Resource0.Name,
+		Policy: &iam.Policy{
+			Version: 1,
+			Bindings: []*iam.Binding{
+				{
+					Role: Role0.Name,
+					Members: []string{
+						toUserMember(User0.Name),
+					},
+				}, {
+					Role: Role0.Name,
+					Members: []string{
+						toUserMember(ServiceAccount0.Name),
+					},
 				},
 			},
 		},
