@@ -1,5 +1,12 @@
 # Changelog
 
+### [1.2.1](https://www.github.com/grbac/grbac/compare/v1.2.0...v1.2.1) (2022-02-14)
+
+
+### Bug Fixes
+
+* remove exponential back-off for transactions ([5362e61](https://www.github.com/grbac/grbac/commit/5362e6193bad9aef5ab98bfa226594d2d9f32ad2))
+
 ## [1.2.0](https://www.github.com/grbac/grbac/compare/v1.1.1...v1.2.0) (2022-02-14)
 
 
