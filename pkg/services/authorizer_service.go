@@ -3,11 +3,9 @@ package services
 import (
 	"context"
 	"text/template"
-	"time"
 
 	"github.com/dgraph-io/dgo/v210"
 	"github.com/dgraph-io/dgo/v210/protos/api"
-	"github.com/jpillora/backoff"
 	"google.golang.org/grpc"
 
 	grbac "github.com/animeapis/go-genproto/grbac/v1alpha1"
@@ -56,7 +54,7 @@ func (s *AccessControlServerImpl) delete(ctx context.Context, txn *dgo.Txn, quer
 		CommitNow: true,
 	}
 
-	if err := s.do(ctx, txn, request); err != nil {
+	if _, err := txn.Do(ctx, request); err != nil {
 		return err
 	}
 
@@ -80,7 +78,7 @@ func (s *AccessControlServerImpl) create(ctx context.Context, txn *dgo.Txn, quer
 		CommitNow: true,
 	}
 
-	if err := s.do(ctx, txn, request); err != nil {
+	if _, err := txn.Do(ctx, request); err != nil {
 		return err
 	}
 
@@ -109,39 +107,9 @@ func (s *AccessControlServerImpl) update(ctx context.Context, txn *dgo.Txn, quer
 		CommitNow: true,
 	}
 
-	if err := s.do(ctx, txn, request); err != nil {
+	if _, err := txn.Do(ctx, request); err != nil {
 		return err
 	}
 
 	return nil
-}
-
-// Execute dgraph requests with exponential back-off for aborted transactions.
-func (s *AccessControlServerImpl) do(ctx context.Context, txn *dgo.Txn, request *api.Request) error {
-	ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
-	defer cancel()
-
-	wait := &backoff.Backoff{
-		Min:    50 * time.Millisecond,
-		Max:    500 * time.Millisecond,
-		Factor: 2,
-		Jitter: true,
-	}
-
-	var err error
-	for i := 0; i < 5; i++ {
-		_, err = txn.Do(ctx, request)
-		if err == nil {
-			return nil
-		}
-
-		if err == dgo.ErrAborted {
-			time.Sleep(wait.Duration())
-			continue
-		}
-
-		return err
-	}
-
-	return err
 }
