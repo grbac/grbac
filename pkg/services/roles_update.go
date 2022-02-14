@@ -3,6 +3,7 @@ package services
 import (
 	"context"
 	"encoding/base64"
+	"errors"
 	"text/template"
 
 	_ "embed"
@@ -113,6 +114,10 @@ func (s *AccessControlServerImpl) UpdateRole(ctx context.Context, req *grbac.Upd
 	}
 
 	if err := s.update(ctx, txn, templateQueryUpdateRole, templateSetUpdateRole, templateDeleteUpdateRole, data); err != nil {
+		if errors.Is(err, dgo.ErrAborted) {
+			return nil, status.New(codes.Aborted, "transaction has been aborted").Err()
+		}
+
 		logrus.WithError(err).Errorf("UpdateRole: failed to execute dgraph call")
 		return nil, status.New(codes.Internal, "internal error").Err()
 	}

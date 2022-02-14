@@ -3,6 +3,7 @@ package services
 import (
 	"context"
 	"encoding/base64"
+	"errors"
 	"text/template"
 
 	_ "embed"
@@ -147,6 +148,10 @@ func (s *AccessControlServerImpl) SetIamPolicy(ctx context.Context, req *iam.Set
 	}
 
 	if err := s.update(ctx, txn, templateQueryUpdatePolicy, templateSetUpdatePolicy, templateDeleteUpdatePolicy, data); err != nil {
+		if errors.Is(err, dgo.ErrAborted) {
+			return nil, status.New(codes.Aborted, "transaction has been aborted").Err()
+		}
+
 		logrus.WithError(err).Errorf("SetIamPolicy: failed to execute dgraph call")
 		return nil, status.New(codes.Internal, "internal error").Err()
 	}

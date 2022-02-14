@@ -2,6 +2,7 @@ package services
 
 import (
 	"context"
+	"errors"
 	"text/template"
 
 	_ "embed"
@@ -73,6 +74,10 @@ func (s *AccessControlServerImpl) CreateSubject(ctx context.Context, req *grbac.
 	}
 
 	if err := s.create(ctx, txn, templateQueryCreateSubject, templateMutationCreateSubject, data); err != nil {
+		if errors.Is(err, dgo.ErrAborted) {
+			return nil, status.New(codes.Aborted, "transaction has been aborted").Err()
+		}
+
 		logrus.WithError(err).Errorf("CreateSubject: failed to execute dgraph call")
 		return nil, status.New(codes.Internal, "internal error").Err()
 	}

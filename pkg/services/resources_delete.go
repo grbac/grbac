@@ -2,6 +2,7 @@ package services
 
 import (
 	"context"
+	"errors"
 	"text/template"
 
 	_ "embed"
@@ -80,6 +81,10 @@ func (s *AccessControlServerImpl) DeleteResource(ctx context.Context, req *grbac
 	}
 
 	if err := s.delete(ctx, txn, templateQueryDeleteResource, templateMutationDeleteResource, data); err != nil {
+		if errors.Is(err, dgo.ErrAborted) {
+			return nil, status.New(codes.Aborted, "transaction has been aborted").Err()
+		}
+
 		logrus.WithError(err).Errorf("DeleteResource: failed to execute dgraph call")
 		return nil, status.New(codes.Internal, "internal error").Err()
 	}

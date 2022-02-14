@@ -2,6 +2,7 @@ package services
 
 import (
 	"context"
+	"errors"
 	"text/template"
 
 	_ "embed"
@@ -69,6 +70,10 @@ func (s *AccessControlServerImpl) DeleteGroup(ctx context.Context, req *grbac.De
 	}
 
 	if err := s.delete(ctx, txn, templateQueryDeleteGroup, templateMutationDeleteGroup, data); err != nil {
+		if errors.Is(err, dgo.ErrAborted) {
+			return nil, status.New(codes.Aborted, "transaction has been aborted").Err()
+		}
+
 		logrus.WithError(err).Errorf("DeleteGroup: failed to execute dgraph call")
 		return nil, status.New(codes.Internal, "internal error").Err()
 	}

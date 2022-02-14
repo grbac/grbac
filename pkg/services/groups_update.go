@@ -3,6 +3,7 @@ package services
 import (
 	"context"
 	"encoding/base64"
+	"errors"
 	"text/template"
 
 	_ "embed"
@@ -131,6 +132,10 @@ func (s *AccessControlServerImpl) UpdateGroup(ctx context.Context, req *grbac.Up
 	}
 
 	if err := s.update(ctx, txn, templateQueryUpdateGroup, templateSetUpdateGroup, templateDeleteUpdateGroup, data); err != nil {
+		if errors.Is(err, dgo.ErrAborted) {
+			return nil, status.New(codes.Aborted, "transaction has been aborted").Err()
+		}
+
 		logrus.WithError(err).Errorf("UpdateGroup: failed to execute dgraph call")
 		return nil, status.New(codes.Internal, "internal error").Err()
 	}

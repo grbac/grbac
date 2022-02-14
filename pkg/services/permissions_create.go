@@ -2,6 +2,7 @@ package services
 
 import (
 	"context"
+	"errors"
 	"text/template"
 
 	_ "embed"
@@ -73,6 +74,10 @@ func (s *AccessControlServerImpl) CreatePermission(ctx context.Context, req *grb
 	}
 
 	if err := s.create(ctx, txn, templateQueryCreatePermission, templateMutationCreatePermission, data); err != nil {
+		if errors.Is(err, dgo.ErrAborted) {
+			return nil, status.New(codes.Aborted, "transaction has been aborted").Err()
+		}
+
 		logrus.WithError(err).Errorf("CreatePermission: failed to execute dgraph call")
 		return nil, status.New(codes.Internal, "internal error").Err()
 	}

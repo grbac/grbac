@@ -3,6 +3,7 @@ package services
 import (
 	"context"
 	"encoding/base64"
+	"errors"
 	"text/template"
 
 	_ "embed"
@@ -100,6 +101,10 @@ func (s *AccessControlServerImpl) CreateResource(ctx context.Context, req *grbac
 	}
 
 	if err := s.create(ctx, txn, templateQueryCreateResource, templateMutationCreateResource, data); err != nil {
+		if errors.Is(err, dgo.ErrAborted) {
+			return nil, status.New(codes.Aborted, "transaction has been aborted").Err()
+		}
+
 		logrus.WithError(err).Errorf("CreateResource: failed to execute dgraph call")
 		return nil, status.New(codes.Internal, "internal error").Err()
 	}
