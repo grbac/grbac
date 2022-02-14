@@ -1,5 +1,12 @@
 # Changelog
 
+### [1.1.2](https://www.github.com/grbac/grbac/compare/v1.1.1...v1.1.2) (2022-02-14)
+
+
+### Bug Fixes
+
+* return aborted after failed transaction ([c0fc4ed](https://www.github.com/grbac/grbac/commit/c0fc4ed20f24894ca78f8a7b11473ff95bf5554e))
+
 ### [1.1.1](https://www.github.com/grbac/grbac/compare/v1.1.0...v1.1.1) (2021-09-30)
 
 
