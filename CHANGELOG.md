@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.2.0](https://www.github.com/grbac/grbac/compare/v1.1.1...v1.2.0) (2022-02-14)
+
+
+### Features
+
+* add exponential backoff to transactions ([953c386](https://www.github.com/grbac/grbac/commit/953c3862a6d988fd09da5cc9131919be39044965))
+
+
+### Bug Fixes
+
+* return aborted after failed transaction ([c0fc4ed](https://www.github.com/grbac/grbac/commit/c0fc4ed20f24894ca78f8a7b11473ff95bf5554e))
+
 ### [1.1.1](https://www.github.com/grbac/grbac/compare/v1.1.0...v1.1.1) (2021-09-30)
 
 
