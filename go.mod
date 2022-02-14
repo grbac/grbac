@@ -3,8 +3,8 @@ module github.com/grbac/grbac
 go 1.16
 
 require (
-	github.com/animeapis/api-go-client v0.0.0-20210719185158-3f1ebfbc688e
-	github.com/animeapis/go-genproto v0.0.0-20210720022825-bf3232b11660
+	github.com/animeapis/api-go-client v0.0.0-20220208015204-0cb37558ebfe
+	github.com/animeapis/go-genproto v0.0.0-20220210010615-3b47c77b0217
 	github.com/dgraph-io/dgo/v210 v210.0.0-20210421093152-78a2fece3ebd
 	github.com/fsnotify/fsnotify v1.4.9 // indirect
 	github.com/golang/protobuf v1.5.2

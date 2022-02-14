@@ -54,6 +54,8 @@ github.com/animeapis/api-go-client v0.0.0-20210706130016-f43925eaefe0 h1:9WPMGKn
 github.com/animeapis/api-go-client v0.0.0-20210706130016-f43925eaefe0/go.mod h1:blT8kGsLh12FYcBcZj14IXL+X6o0sSv6lxHPRV7JHKY=
 github.com/animeapis/api-go-client v0.0.0-20210719185158-3f1ebfbc688e h1:enf+AfSGCjGnyrmbotM1VClz46mI45ZbRaDh7lFbTd0=
 github.com/animeapis/api-go-client v0.0.0-20210719185158-3f1ebfbc688e/go.mod h1:blT8kGsLh12FYcBcZj14IXL+X6o0sSv6lxHPRV7JHKY=
+github.com/animeapis/api-go-client v0.0.0-20220208015204-0cb37558ebfe h1:xipkRB70s0gdtDfkzXF0W2bVhvw9/ouX2f9/GbweQ3M=
+github.com/animeapis/api-go-client v0.0.0-20220208015204-0cb37558ebfe/go.mod h1:blT8kGsLh12FYcBcZj14IXL+X6o0sSv6lxHPRV7JHKY=
 github.com/animeapis/go-genproto v0.0.0-20210521234542-490e9b696088/go.mod h1:uKRvemxPZyVEy2+4cCWJ6WXDeBXyR4YjBFnHgV5cGcg=
 github.com/animeapis/go-genproto v0.0.0-20210705160300-2b8f84d86720 h1:n+ozc7P73xOjhvoFjB86vaZF0RA5wSwIcuxFVXiFtsQ=
 github.com/animeapis/go-genproto v0.0.0-20210705160300-2b8f84d86720/go.mod h1:S3f/N8TLUdJ6rYag/SZxKFMCCvpt/ueFMe7ymlyjZEs=
@@ -69,6 +71,8 @@ github.com/animeapis/go-genproto v0.0.0-20210706183531-6bde4cfe3722 h1:wH+1TPwGp
 github.com/animeapis/go-genproto v0.0.0-20210706183531-6bde4cfe3722/go.mod h1:S3f/N8TLUdJ6rYag/SZxKFMCCvpt/ueFMe7ymlyjZEs=
 github.com/animeapis/go-genproto v0.0.0-20210720022825-bf3232b11660 h1:19vlhXVKZsLRuw4VhJjpzneK8WkURErvGmjKHUpLW/U=
 github.com/animeapis/go-genproto v0.0.0-20210720022825-bf3232b11660/go.mod h1:S3f/N8TLUdJ6rYag/SZxKFMCCvpt/ueFMe7ymlyjZEs=
+github.com/animeapis/go-genproto v0.0.0-20220210010615-3b47c77b0217 h1:yu7b7oaPGVu7uA3oD3lk8MtpXDCo3F7y100bEkdYnt4=
+github.com/animeapis/go-genproto v0.0.0-20220210010615-3b47c77b0217/go.mod h1:S3f/N8TLUdJ6rYag/SZxKFMCCvpt/ueFMe7ymlyjZEs=
 github.com/armon/circbuf v0.0.0-20150827004946-bbbad097214e/go.mod h1:3U/XgcO3hCbHZ8TKRvWD2dDTCfh9M9ya+I9JpbB7O8o=
 github.com/armon/go-metrics v0.0.0-20180917152333-f0300d1749da/go.mod h1:Q73ZrmVTwzkszR9V5SSuryQ31EELlFMUz1kKyl939pY=
 github.com/armon/go-radix v0.0.0-20180808171621-7fddfc383310/go.mod h1:ufUuZ+zHj4x4TnLV4JWEpy2hxWSpsRywHrMgIH9cCH8=

@@ -13,7 +13,7 @@ GOPROXY=direct go get -u github.com/animeapis/go-genproto@master
 
 echo "updating git submodules..."
 
-git submodule foreach git pull origin master
+git submodule foreach git pull origin
 
 echo "regenerating gapics..."
 
