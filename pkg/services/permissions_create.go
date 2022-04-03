@@ -73,7 +73,7 @@ func (s *AccessControlServerImpl) CreatePermission(ctx context.Context, req *grb
 		Permission: req.GetPermission(),
 	}
 
-	if err := s.create(ctx, txn, templateQueryCreatePermission, templateMutationCreatePermission, data); err != nil {
+	if _, err := s.create(ctx, txn, templateQueryCreatePermission, templateMutationCreatePermission, "", data); err != nil {
 		if errors.Is(err, dgo.ErrAborted) {
 			return nil, status.New(codes.Aborted, "transaction has been aborted").Err()
 		}

@@ -96,7 +96,7 @@ func (s *AccessControlServerImpl) CreateRole(ctx context.Context, req *grbac.Cre
 		ETag: base64.StdEncoding.EncodeToString(etag),
 	}
 
-	if err := s.create(ctx, txn, templateQueryCreateRole, templateMutationCreateRole, data); err != nil {
+	if _, err := s.create(ctx, txn, templateQueryCreateRole, templateMutationCreateRole, "", data); err != nil {
 		if errors.Is(err, dgo.ErrAborted) {
 			return nil, status.New(codes.Aborted, "transaction has been aborted").Err()
 		}

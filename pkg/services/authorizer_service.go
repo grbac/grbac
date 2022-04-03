@@ -61,28 +61,24 @@ func (s *AccessControlServerImpl) delete(ctx context.Context, txn *dgo.Txn, quer
 	return nil
 }
 
-func (s *AccessControlServerImpl) create(ctx context.Context, txn *dgo.Txn, queryTmpl, mutationTmpl *template.Template, data interface{}) error {
+func (s *AccessControlServerImpl) create(ctx context.Context, txn *dgo.Txn, queryTmpl, mutationTmpl *template.Template, cond string, data interface{}) (*api.Response, error) {
 	query, err := ExecuteTemplate(queryTmpl, data)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	mutation, err := ExecuteTemplate(mutationTmpl, data)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	request := &api.Request{
 		Query:     string(query),
-		Mutations: []*api.Mutation{{SetNquads: mutation}},
+		Mutations: []*api.Mutation{{SetNquads: mutation, Cond: cond}},
 		CommitNow: true,
 	}
 
-	if _, err := txn.Do(ctx, request); err != nil {
-		return err
-	}
-
-	return nil
+	return txn.Do(ctx, request)
 }
 
 func (s *AccessControlServerImpl) update(ctx context.Context, txn *dgo.Txn, queryTmpl, setTmpl, deleteTmpl *template.Template, data interface{}) error {

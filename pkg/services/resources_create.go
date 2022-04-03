@@ -3,6 +3,7 @@ package services
 import (
 	"context"
 	"encoding/base64"
+	"encoding/json"
 	"errors"
 	"text/template"
 
@@ -11,7 +12,6 @@ import (
 	grbac "github.com/animeapis/go-genproto/grbac/v1alpha1"
 
 	"github.com/dgraph-io/dgo/v210"
-	"github.com/grbac/grbac/pkg/graph"
 	"github.com/sirupsen/logrus"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -22,6 +22,8 @@ var queryCreateResource string
 
 //go:embed data/resources/resources.create.mutation.go.tmpl
 var mutationCreateResource string
+
+var conditionCreateResource = "@if(not(eq(len(parent), 0)) AND eq(len(resource), 0))"
 
 var templateQueryCreateResource = template.Must(
 	template.New("QueryCreateResource").Funcs(defaultFuncMap).Parse(queryCreateResource),
@@ -57,28 +59,6 @@ func (s *AccessControlServerImpl) validateCreateResource(ctx context.Context, tx
 		return status.New(codes.InvalidArgument, "invalid argument {invalid parent name format}").Err()
 	}
 
-	// The parent must exist.
-	parentFound, err := graph.ExistsResource(ctx, txn, req.Resource.Parent)
-	if err != nil {
-		logrus.WithError(err).Errorf("CreateResource: failed to query resource parent")
-		return status.New(codes.Internal, "internal error").Err()
-	}
-
-	if !parentFound {
-		return status.New(codes.InvalidArgument, "invalid argument {parent does not exist}").Err()
-	}
-
-	// The resource must be new to avoid race conditions.
-	resourceFound, err := graph.ExistsResource(ctx, txn, req.Resource.Name)
-	if err != nil {
-		logrus.WithError(err).Errorf("CreateResource: failed to query resource")
-		return status.New(codes.Internal, "internal error").Err()
-	}
-
-	if resourceFound {
-		return status.New(codes.AlreadyExists, "conflict").Err()
-	}
-
 	return nil
 }
 
@@ -100,13 +80,27 @@ func (s *AccessControlServerImpl) CreateResource(ctx context.Context, req *grbac
 		ETag:     base64.StdEncoding.EncodeToString(etag),
 	}
 
-	if err := s.create(ctx, txn, templateQueryCreateResource, templateMutationCreateResource, data); err != nil {
+	resp, err := s.create(ctx, txn, templateQueryCreateResource, templateMutationCreateResource, conditionCreateResource, data)
+	if err != nil {
 		if errors.Is(err, dgo.ErrAborted) {
 			return nil, status.New(codes.Aborted, "transaction has been aborted").Err()
 		}
 
 		logrus.WithError(err).Errorf("CreateResource: failed to execute dgraph call")
 		return nil, status.New(codes.Internal, "internal error").Err()
+	}
+
+	var m map[string][]map[string]string
+	if err := json.Unmarshal(resp.Json, &m); err != nil {
+		logrus.WithError(err).Errorf("CreateResource: failed to unmarshal response")
+		return nil, status.New(codes.Internal, "internal error").Err()
+	}
+
+	if len(m["parent"]) == 0 {
+		return nil, status.New(codes.InvalidArgument, "invalid argument {parent does not exist}").Err()
+	}
+	if len(m["resource"]) > 0 {
+		return nil, status.New(codes.AlreadyExists, "conflict").Err()
 	}
 
 	resource := &grbac.Resource{

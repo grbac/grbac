@@ -106,7 +106,7 @@ func (s *AccessControlServerImpl) CreateGroup(ctx context.Context, req *grbac.Cr
 		ETag:  base64.StdEncoding.EncodeToString(etag),
 	}
 
-	if err := s.create(ctx, txn, templateQueryCreateGroup, templateMutationCreateGroup, data); err != nil {
+	if _, err := s.create(ctx, txn, templateQueryCreateGroup, templateMutationCreateGroup, "", data); err != nil {
 		if errors.Is(err, dgo.ErrAborted) {
 			return nil, status.New(codes.Aborted, "transaction has been aborted").Err()
 		}
