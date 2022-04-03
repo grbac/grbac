@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.0](https://www.github.com/grbac/grbac/compare/v1.2.1...v1.3.0) (2022-04-03)
+
+
+### Features
+
+* execute creation in a single write operation ([2049166](https://www.github.com/grbac/grbac/commit/204916668c4c386542df936af88202a7b2399244))
+
 ### [1.2.1](https://www.github.com/grbac/grbac/compare/v1.2.0...v1.2.1) (2022-02-14)
 
 
